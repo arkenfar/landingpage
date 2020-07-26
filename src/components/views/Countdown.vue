@@ -1,21 +1,20 @@
 <template>
   <v-card>
-    <v-row justify="center" align="center">
-      <v-col cols="auto">
+    <v-row>
+      <v-col cols="auto" max-width="33vw"> <Bubble1> </Bubble1></v-col>
+      <v-col cols="auto" max-width="33vw">
         <v-row justify="center" align="center">
           <v-col cols="auto">
-            <Bubble1>
-              <v-card-text
-                class="text-center font-weight-light text-decoration-underline text-xl-h1 text-lg-h2 text-md-h3 text-sm-h4 text-xs-h6"
-              >
-                STAY TUNED
-              </v-card-text>
-              <v-card-text
-                class="text-center font-weight-light"
-                style="margin-top: -5px"
-                >Project announcement {{ tbaDate }} date coming up in ...
-              </v-card-text>
-            </Bubble1>
+            <v-card-text
+              class="text-center font-weight-light text-decoration-underline text-xl-h1 text-lg-h2 text-md-h3 text-sm-h4 text-xs-h6"
+            >
+              STAY TUNED
+            </v-card-text>
+            <v-card-text
+              class="text-center font-weight-light"
+              style="margin-top: -5px"
+              >Project announcement {{ tbaDate }} date coming up in ...
+            </v-card-text>
           </v-col>
 
           <v-col cols="12">
@@ -77,6 +76,9 @@
           </v-col>
         </v-row>
       </v-col>
+      <v-col class="align-content-space-between layout wrap" cols="auto" md="6">
+        <Bubble1> </Bubble1
+      ></v-col>
     </v-row>
   </v-card>
 </template>

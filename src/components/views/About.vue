@@ -1,14 +1,31 @@
 <template>
-  <div>{{ projectDescription }}</div>
+  <v-card>
+    <v-container>
+      <v-card-title>{{ aboutTitle }}</v-card-title>
+      <v-card-text>
+        {{ about }}
+      </v-card-text>
+    </v-container>
+  </v-card>
 </template>
 <script>
 export default {
   name: "About",
-  data() {
-    return {
-      projectDescription:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate dicta rerum ullam quae neque deserunt qui hic, quod sit obcaecati est enim, nulla quas sed velit vitae. Dolorum, vel distinctio!",
-    };
+  computed: {
+    about() {
+      return this.$store.getters["settings/about"];
+    },
+    aboutTitle() {
+      return "About Title Placeholder";
+    },
+  },
+  methods: {
+    loadAbout() {
+      this.$store.dispatch("settings/loadAbout");
+    },
+  },
+  mounted() {
+    this.loadAbout();
   },
 };
 </script>

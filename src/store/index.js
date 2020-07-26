@@ -5,6 +5,7 @@ import Vuex from "vuex";
 import settings from "./modules/settings";
 import loading from "./modules/loading";
 import error from "./modules/error";
+import user from "./modules/user";
 
 Vue.use(Vuex);
 
@@ -13,5 +14,6 @@ export const store = new Vuex.Store({
     settings,
     loading,
     error,
+    user,
   },
 });

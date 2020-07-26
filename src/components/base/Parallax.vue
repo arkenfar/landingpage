@@ -1,5 +1,5 @@
 <template>
-  <v-parallax :src="src" :height="$attrs.height">
+  <v-parallax :src="src" :height="$attrs.height" :width="$attrs.width">
     <slot></slot>
   </v-parallax>
 </template>

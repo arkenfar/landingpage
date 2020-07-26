@@ -43,10 +43,28 @@ export default {
   FIREBASE: {
     apiKey: process.env.VUE_APP_FIREBASE_API_KEY || "empty",
     authDomain:
-      process.env.VUE_APP_FIREBASE_PROJECT_ID + ".firebaseapp.com" || "empty",
+      process.env.VUE_APP_FIREBASE_AUTH_DOMAIN + ".firebaseapp.com" || "empty",
     databaseURL: process.env.VUE_APP_FIREBASE_DB_URL || "empty",
     projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID || "empty",
     storageBucket:
       process.env.VUE_APP_FIREBASE_STORAGE_BUCKET + ".appspot.com" || "empty",
+  },
+  GITHUB: {
+    user: process.env.VUE_APP_GITHUB_USER || "empty",
+    repo: process.env.VUE_APP_GITHUB_REPO || "empty",
+
+    GET_API_URL() {
+      if (this.user !== "empty" && this.repo !== "empty") {
+        return (
+          "https://api.github.com/repos/" +
+          this.repo +
+          "/" +
+          this.user +
+          "/commits"
+        );
+      } else {
+        return null;
+      }
+    },
   },
 };

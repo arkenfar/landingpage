@@ -11,9 +11,13 @@
     "@amcharts/amcharts4": "^4.9.30",
     "@amcharts/amcharts4-geodata": "^4.1.16",
     "aos": "^2.3.4",
+    "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "firebase": "^7.16.0",
+    "google-maps": "^4.3.2",
+    "gsap": "^3.4.1",
     "vue": "^2.6.11",
+    "vue-axios": "^2.1.5",
     "vuetify": "^2.2.11",
     "vuex": "^3.5.1"
   },

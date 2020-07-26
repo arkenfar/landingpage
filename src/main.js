@@ -7,20 +7,20 @@ import { store } from "./store/index";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import * as firebase from "firebase";
+import axios from "axios";
+import VueAxios from "vue-axios";
 
 Vue.config.productionTip = false;
 
 new Vue({
   vuetify,
   store,
+  VueAxios,
+  axios,
   created() {
     if (this.$store.getters["settings/useFirebase"] == true) {
-      console.log("firebase will be used");
       firebase.initializeApp(this.$store.getters["settings/firebase"]);
-    } else {
-      console.info("firebase will not be used");
     }
-
     AOS.init({ disable: "phone" });
   },
   render: (h) => h(App),

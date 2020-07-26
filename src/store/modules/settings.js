@@ -1,5 +1,6 @@
 import Vuetify from "../../plugins/vuetify";
 import Constants from "../../constants/Constants";
+import * as firebase from "firebase";
 
 const namespaced = true;
 
@@ -15,6 +16,8 @@ const state = {
   percentageRemaining: undefined,
   useFirebase: Constants.APPLICATION.USE_FIREBASE(),
   firebase: Constants.FIREBASE,
+  github: Constants.GITHUB,
+  about: undefined,
 };
 
 const getters = {
@@ -51,6 +54,12 @@ const getters = {
   firebase(state) {
     return state.firebase;
   },
+  github(state) {
+    return state.github;
+  },
+  about(state) {
+    return state.about;
+  },
 };
 
 const mutations = {
@@ -62,6 +71,9 @@ const mutations = {
   },
   setPercentageRemaining(state, payload) {
     state.percentageRemaining = payload;
+  },
+  setAbout(state, payload) {
+    state.about = payload;
   },
 };
 
@@ -76,6 +88,18 @@ const actions = {
   },
   percentageRemaining({ commit }, payload) {
     commit("setPercentageRemaining", payload);
+  },
+  loadAbout({ commit }) {
+    this.dispatch("loading/setLoading", true);
+    var boardsRef = firebase.database().ref("/about");
+
+    boardsRef.on("value", (snapshot) => {
+      if (snapshot.val() == null) {
+        return;
+      }
+      commit("setAbout", snapshot.val());
+    });
+    this.dispatch("loading/setLoading", false);
   },
 };
 

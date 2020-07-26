@@ -2,8 +2,9 @@
   <v-card width="180vw">
     <v-container>
       <v-row justify="center" align="center">
-        <v-card-title class="text-center">{{ title }}</v-card-title>
-        <div data-aos="zoom-in" class="chartdiv" ref="chartdiv"></div>
+        <v-card-title class="text-center">World Population</v-card-title>
+        <v-card-title class="text-center">{{ info }}</v-card-title>
+        <div data-aos="zoom-in" class="hello" ref="chartdiv"></div>
         <div id="demo"></div>
       </v-row>
     </v-container>
@@ -13,29 +14,22 @@
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4geodata_worldLow from "@amcharts/amcharts4-geodata/worldLow";
-
+import axios from "axios";
 export default {
   name: "Map",
-  props: { title: { type: String, default: "Title Placeholder" } },
-
   data() {
     return {
-      mapTooltip: "this is a test",
+      apiUrl:
+        "https://data.opendatasoft.com/api/records/1.0/search/?dataset=world-population%40kapsarc&rows=1000&facet=year&facet=country_name&refine.year=2018",
+      info: null,
     };
   },
-  computed: {
-    geoLocation() {
-      return this.$store.getters["settings/about"];
-    },
-  },
-  methods: {
-    loadGeoLocation() {
-      this.$store.dispatch("user/setUserGeoLocation");
-    },
-  },
-
+  computed: {},
   mounted() {
-    this.loadGeoLocation();
+    axios.get(this.apiUrl).then((response) => {
+      console.log(response);
+      this.info = response;
+    });
 
     // Create map instance
     var chart = am4core.create(this.$refs.chartdiv, am4maps.MapChart);
@@ -56,6 +50,21 @@ export default {
     var polygonTemplate = polygonSeries.mapPolygons.template;
 
     polygonTemplate.fill = am4core.color("#74B266");
+
+    polygonSeries.data = [
+      {
+        id: "US",
+        name: "United States of Assholes",
+        value: 150,
+        fill: am4core.color("#F05C5C"),
+      },
+      {
+        id: "FR",
+        name: "France",
+        value: 50,
+        fill: am4core.color("#5C5CFF"),
+      },
+    ];
     polygonTemplate.tooltipText = "{name}: {value}";
     polygonTemplate.propertyFields.fill = "fill";
     polygonSeries.exclude = ["AQ"];
@@ -64,24 +73,6 @@ export default {
     hs.properties.fill = am4core.color("#367B25");
 
     let imageSeries = chart.series.push(new am4maps.MapImageSeries());
-    if (this.geoLocation !== undefined && this.geoLocation !== null) {
-      imageSeries.data = [
-        {
-          latitude: this.geoLocation.latitude,
-          longitude: this.geoLocation.longitude,
-          title: "You are here!",
-        },
-      ];
-    } else {
-      imageSeries.data = [
-        {
-          latitude: 0,
-          longitude: 0,
-          title: "Geolocation is not supported by this browser.",
-        },
-      ];
-    }
-
     let imageSeriesTemplate = imageSeries.mapImages.template;
     let circle = imageSeriesTemplate.createChild(am4core.Circle);
     circle.radius = 4;
@@ -93,6 +84,51 @@ export default {
 
     imageSeriesTemplate.propertyFields.latitude = "latitude";
     imageSeriesTemplate.propertyFields.longitude = "longitude";
+
+    imageSeries.data = [
+      {
+        latitude: 48.856614,
+        longitude: 2.352222,
+        title: "Paris",
+      },
+      {
+        latitude: 40.712775,
+        longitude: -74.005973,
+        title: "New York",
+      },
+      {
+        latitude: 49.282729,
+        longitude: -123.120738,
+        title: "Vancouver",
+      },
+      {
+        latitude: 59.89990400000001,
+        longitude: 10.770841599999999,
+        title: "You are here",
+      },
+    ];
+    navigator.geolocation.getCurrentPosition((geoLoc) => {
+      console.log("geo location: ", geoLoc);
+    });
+
+    var x = document.getElementById("demo");
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    function showPosition(position) {
+      x.innerHTML =
+        "Latitude: " +
+        position.coords.latitude +
+        "<br>Longitude: " +
+        position.coords.longitude;
+    }
+    getLocation();
   },
 
   beforeDestroy() {
@@ -103,11 +139,8 @@ export default {
 };
 </script>
 <style scoped>
-.chartdiv {
+.hello {
   width: 100%;
   height: 500px;
-}
-.chartdiv:hover {
-  cursor: pointer;
 }
 </style>
