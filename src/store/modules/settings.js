@@ -7,6 +7,7 @@ const namespaced = true;
 const state = {
   appName: Constants.APPLICATION.GET_APP_NAME(),
   darkMode: Constants.APPLICATION.DARKMODE,
+  color: Constants.APPLICATION.COLOR,
   logo: Constants.APPLICATION.LOGO,
   logoDarkMode: Constants.APPLICATION.LOGO_DARK_MODE,
   copyrights: Constants.COPYRIGHTS.GET_COPYRIGHTS(),
@@ -18,11 +19,15 @@ const state = {
   firebase: Constants.FIREBASE,
   github: Constants.GITHUB,
   about: undefined,
+  utils: Constants.UTILS,
 };
 
 const getters = {
   appName(state) {
     return state.appName;
+  },
+  utils(state) {
+    return state.utils;
   },
   tbaDate(state) {
     return state.tbaDate;
@@ -45,6 +50,9 @@ const getters = {
   darkMode(state) {
     return state.darkMode;
   },
+  color(state) {
+    return state.color;
+  },
   copyrights(state) {
     return state.copyrights;
   },
@@ -66,6 +74,9 @@ const mutations = {
   setDarkMode(state, payload) {
     state.darkMode = payload;
   },
+  setColor(state, payload) {
+    state.color = payload;
+  },
   setCountdown(state, payload) {
     state.countdown = payload;
   },
@@ -83,9 +94,18 @@ const actions = {
     Vuetify.framework.theme.dark = payload;
     commit("setDarkMode", payload);
   },
+  color({ commit }, payload) {
+    if (this.state.settings.darkMode === true) {
+      Vuetify.framework.theme.themes.dark.primary = payload.hex;
+    } else {
+      Vuetify.framework.theme.themes.light.primary = payload.hex;
+    }
+    commit("setColor", payload);
+  },
   countdown({ commit }, payload) {
     commit("setCountdown", payload);
   },
+
   percentageRemaining({ commit }, payload) {
     commit("setPercentageRemaining", payload);
   },

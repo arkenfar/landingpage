@@ -1,12 +1,58 @@
 <template>
-  <v-card width="180vw" id="github">
+  <v-card width="100vw" id="github">
     <v-container>
       <v-row justify="center" align="center">
-        <v-card-title class="text-center">GitHub</v-card-title>
+        <v-col cols="auto" xs="12">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                :icon="true"
+                id="githubIconBtn"
+                x-large
+                dark
+                v-bind="attrs"
+                v-on="on"
+                v-on:click="openGithubUserUrl()"
+              >
+                <v-icon x-large>mdi-github</v-icon></v-btn
+              >
+            </template>
+            <span>Open "{{ githubUserUrl }}" in a new tab</span>
+          </v-tooltip>
+        </v-col>
+        <v-col cols="auto" xs="12">
+          <v-card-subtitle class="text-center"
+            >Describtion: {{ githubDescription }}</v-card-subtitle
+          >
+          <v-card-subtitle class="text-center">
+            Made by <span class="text-capitalize">{{ github.user }}</span>
+          </v-card-subtitle></v-col
+        >
+        <v-col cols="auto" xs="12">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                :icon="true"
+                id="githubIconBtn"
+                x-large
+                dark
+                v-bind="attrs"
+                v-on="on"
+                v-on:click="openGithubRepoUrl()"
+              >
+                <v-icon x-large>mdi-github</v-icon></v-btn
+              >
+            </template>
+            <span>Open "{{ githubRepoUrl }}" in a new tab</span>
+          </v-tooltip>
+        </v-col>
+      </v-row>
 
-        <v-card-text v-for="(c) in commits" :key="c.index">{{c}}</v-card-text>
-
-        <div class="chart" ref="chartdiv"></div>
+      <v-row justify="center" align="center">
+        <v-card-title class="text-center"
+          >Latest GitHub commitments
+        </v-card-title>
+        <div class="mt-5 chart" ref="chartdiv"></div>
       </v-row>
     </v-container>
   </v-card>
@@ -22,11 +68,23 @@ am4core.useTheme(am4themes_animated);
 export default {
   name: "GitHub",
   data() {
-    return { info: {}, commits: [] };
+    return { commits: [] };
   },
   computed: {
     github() {
       return this.$store.getters["settings/github"];
+    },
+    githubDescription() {
+      return this.utils.capitalizeFirstLetter(this.github.description);
+    },
+    githubUserUrl() {
+      return this.github.GET_USER_URL();
+    },
+    githubRepoUrl() {
+      return this.github.GET_REPO_URL();
+    },
+    utils() {
+      return this.$store.getters["settings/utils"];
     },
     error: {
       get() {
@@ -37,13 +95,32 @@ export default {
       },
     },
   },
-
+  methods: {
+    openGithubUserUrl() {
+      let href = this.githubUserUrl();
+      window.open(href, "_blank");
+    },
+    openGithubRepoUrl() {
+      let href = this.githubRepoUrl();
+      window.open(href, "_blank");
+    },
+  },
   mounted() {
     axios
-      .get(this.github.GET_API_URL())
+      .get(this.github.GET_API_REPO_URL())
       .then((res) => {
-        this.info = res;
-        console.log("dawdaaaaa", res.data);
+        console.log("utils: ", this.utils);
+        console.log("RES::: ", res);
+        this.github.description = res.data.description;
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    axios
+      .get(this.github.GET_API_COMMITS_URL())
+      .then((res) => {
+        console.log("DATA: ", res);
         return res.data;
       })
       .then((data) => {
@@ -59,13 +136,15 @@ export default {
           chart.paddingRight = 20;
 
           let data = [];
+          let commits = this.commits.length;
+          for (let i = 0; i < this.commits.length; i++) {
+            commits -= 1;
 
-          for (let i = 1; i < this.commits.length; i++) {
-            console.log("dawdd", this.commits[i]);
             data.push({
               date: this.commits[i].author.date,
-              name: "name" + i,
-              value: i,
+              name: "author: " + this.commits[i].author.name,
+              comment: "comment: " + this.commits[i].message,
+              value: commits,
             });
           }
 
@@ -73,18 +152,29 @@ export default {
 
           let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
           dateAxis.renderer.grid.template.location = 0;
+          dateAxis.renderer.labels.template.fill = am4core.color("#A0CA92");
 
           let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
           valueAxis.tooltip.disabled = true;
           valueAxis.renderer.minWidth = 35;
+          valueAxis.renderer.labels.template.fill = am4core.color("#A0CA92");
 
           let series = chart.series.push(new am4charts.LineSeries());
+          series.stroke = am4core.color("#ff3333");
+          series.strokeWidth = 3;
           series.dataFields.dateX = "date";
+          series.fill = am4core.color("#333");
           series.dataFields.valueY = "value";
 
-          series.tooltipText = "{valueY.value}";
-          chart.cursor = new am4charts.XYCursor();
+          series.name = "Commits";
+          series.tooltipText = "[bold]{name}[/] \n [bold]{comment}[/] ";
 
+          series.bullets.push(new am4charts.CircleBullet());
+          series.connect = false;
+
+          chart.cursor = new am4charts.XYCursor();
+          chart.background.fill = "#333";
+          chart.background.opacity = 1;
           let scrollbarX = new am4charts.XYChartScrollbar();
           scrollbarX.series.push(series);
           chart.scrollbarX = scrollbarX;
@@ -105,6 +195,10 @@ export default {
 <style scoped>
 .chart {
   width: 100%;
-  height: 500px;
+  height: 300px;
+}
+
+#githubIconBtn:hover {
+  color: var(--v-primary-base);
 }
 </style>

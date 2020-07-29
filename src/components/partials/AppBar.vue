@@ -20,38 +20,55 @@
 
     <!-- <v-img alt="Logo" :src="logo" max-height="100" max-width="100" /> -->
     <v-spacer></v-spacer>
-    <v-menu bottom left :close-on-content-click="false" :y-offset="true">
+    <v-menu
+      bottom
+      left
+      :close-on-content-click="false"
+      :y-offset="true"
+      v-model="menuOpen"
+    >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn dark icon v-bind="attrs" v-on="on">
+        <v-btn id="menu-btn" v-bind="attrs" v-on="on" :icon="true">
           <v-icon>mdi-dots-horizontal-circle-outline</v-icon>
         </v-btn>
       </template>
 
       <v-list>
-        <!-- <v-list-item>
-            <v-checkbox
-              v-model="darkMode"
-              color="secondary"
-              label="Dark mode"
-              class="mt-5"
-              :mandatory="false"
-            />
-          </v-list-item> -->
         <v-list-item>
           <v-switch
             class="mx-auto"
             v-model="darkMode"
-            secondary
-            color="secondary"
+            primary
+            color="primary"
             label="Dark mode"
             dense
           />
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list-item>
+          <v-color-picker class="ma-2" v-model="color"></v-color-picker>
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list-item>
+          <v-card-text class="primary text-center">{{
+            color ? color.hex : ""
+          }}</v-card-text>
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list-item>
+          <v-row justify="center">
+            <v-btn color="success" class="mr-3" icon @click="save()"
+              ><v-icon>mdi-check-outline</v-icon></v-btn
+            >
+            <v-btn color="error" icon @click="cancel()"
+              ><v-icon>mdi-close-circle-outline</v-icon></v-btn
+            ></v-row
+          >
         </v-list-item>
       </v-list>
     </v-menu>
   </v-app-bar>
 </template>
-
 <script>
 export default {
   name: "AppBar",
@@ -60,15 +77,14 @@ export default {
     return {
       showLogo: false,
       isScrolling: false,
+      color: undefined,
+      menuOpen: false,
     };
   },
   computed: {
     logo() {
       return this.$store.getters["settings/logoDarkMode"];
     },
-    // showLogo() {
-    //   return this.logo !== null && this.logo !== undefined;
-    // },
     darkMode: {
       get() {
         return this.$store.getters["settings/darkMode"];
@@ -81,11 +97,25 @@ export default {
   methods: {
     onScroll() {
       const offset = window.pageYOffset;
-      this.isScrolling = offset > 50;
-      this.showLogo = offset > 50;
+      this.isScrolling = offset > 80;
+      this.showLogo = offset > 80;
+    },
+    setColor(color) {
+      console.log("set color", color);
+      this.$store.dispatch("settings/color", color);
     },
     setDarkMode() {
       this.$store.dispatch("settings/darkMode");
+    },
+    save() {
+      console.log("saving", this.color);
+      this.setColor(this.color);
+      this.menuOpen = false;
+    },
+    cancel() {
+      console.log("canceling");
+      this.color = undefined;
+      this.menuOpen = false;
     },
   },
   mounted() {
@@ -95,4 +125,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+#menu-btn:hover {
+  color: var(--v-primary-base);
+}
+</style>

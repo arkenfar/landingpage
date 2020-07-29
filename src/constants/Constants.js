@@ -4,6 +4,7 @@ import Logo_default from "../assets/Logo_Default.png";
 export default {
   APPLICATION: {
     NAME: process.env.VUE_APP_name || "empty",
+    COLOR: process.env.VUE_APP_color || "",
     LOGO: Logo_default,
     LOGO_DARK_MODE: Logo_darkMode,
     TBA_DATE: process.env.VUE_APP_tbaDate || "2020-07-15",
@@ -40,6 +41,24 @@ export default {
       );
     },
   },
+  UTILS: {
+    hexToRgb(hex) {
+      var c;
+      if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+        c = hex.substring(1).split("");
+        if (c.length == 3) {
+          c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c = "0x" + c.join("");
+        return (
+          "rgba(" + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(",") + ",1)"
+        );
+      }
+    },
+    capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+  },
   FIREBASE: {
     apiKey: process.env.VUE_APP_FIREBASE_API_KEY || "empty",
     authDomain:
@@ -52,16 +71,35 @@ export default {
   GITHUB: {
     user: process.env.VUE_APP_GITHUB_USER || "empty",
     repo: process.env.VUE_APP_GITHUB_REPO || "empty",
+    description: "",
 
-    GET_API_URL() {
+    GET_API_REPO_URL() {
       if (this.user !== "empty" && this.repo !== "empty") {
-        return (
-          "https://api.github.com/repos/" +
-          this.repo +
-          "/" +
-          this.user +
-          "/commits"
-        );
+        return "https://api.github.com/repos/" + this.user + "/" + this.repo;
+      } else {
+        return null;
+      }
+    },
+    GET_API_COMMITS_URL() {
+      if (this.user !== "empty" && this.repo !== "empty") {
+        let url = this.GET_API_REPO_URL() + "/commits";
+        return url;
+      } else {
+        return null;
+      }
+    },
+    GET_USER_URL() {
+      if (this.user !== "empty") {
+        let url = "https://github.com/" + this.user;
+        return url;
+      } else {
+        return null;
+      }
+    },
+    GET_REPO_URL() {
+      if (this.repo !== "empty") {
+        let url = this.GET_USER_URL() + "/" + this.repo;
+        return url;
       } else {
         return null;
       }

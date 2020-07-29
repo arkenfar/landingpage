@@ -1,14 +1,13 @@
 <template>
   <Parallax
-    src="https://images.unsplash.com/photo-1470790376778-a9fbc86d70e2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
+    src="https://images.unsplash.com/photo-1505356822725-08ad25f3ffe4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
     height="200"
   >
     <v-row justify="center" align="center">
       <v-col v-for="(name, index) in appName" :key="index" cols="auto">
         <div>
           <p
-            class="text-center font-weight-bold text-uppercase text-sm-body-1"
-            style="font-size: 55px;"
+            class="banner-text text-center font-weight-bold text-uppercase text-sm-body-1"
           >
             {{ name }}
           </p>
@@ -31,3 +30,34 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+@media (min-width: 858px) {
+  .banner-text {
+    font-size: 120px;
+  }
+}
+
+@media (min-width: 780px) {
+  .banner-text {
+    font-size: 110px;
+  }
+}
+
+@media (min-width: 702px) {
+  .banner-text {
+    font-size: 100px;
+  }
+}
+
+@media (min-width: 724px) {
+  .banner-text {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 623px) {
+  .banner-text {
+    font-size: 18px;
+  }
+}
+</style>

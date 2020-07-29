@@ -9,12 +9,15 @@
       </v-row>
 
       <Banner></Banner>
+      <v-divider></v-divider>
       <Countdown></Countdown>
-      <Sneakpeak></Sneakpeak>
-      <Boxes></Boxes>
-      <GoogleMaps></GoogleMaps>
+      <v-divider></v-divider>
+      <!-- <Sneakpeak></Sneakpeak> -->
+      <!-- <Boxes></Boxes> -->
+
       <!-- <Map title="Your Location.."></Map> -->
       <GitHub></GitHub>
+      <GoogleMaps></GoogleMaps>
       <About v-if="useFirebase"></About>
       <Contact></Contact>
       <!-- <WorldPopulation ></WorldPopulation> -->
@@ -27,8 +30,8 @@ import Error from "./shared/Error";
 import Countdown from "./views/Countdown";
 import Banner from "./views/Banner";
 // import Map from "./views/Map";
-import Sneakpeak from "./views/Sneakpeak";
-import Boxes from "./views/Boxes";
+// import Sneakpeak from "./views/Sneakpeak";
+// import Boxes from "./views/Boxes";
 import About from "./views/About";
 import Contact from "./views/Contact";
 // import WorldPopulation from "./views/WorldPopulation";
@@ -40,9 +43,9 @@ export default {
   components: {
     Countdown,
     Banner,
-    Sneakpeak,
+    // Sneakpeak,
     // Map,
-    Boxes,
+    // Boxes,
     About,
     Loading,
     Error,
