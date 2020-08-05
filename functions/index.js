@@ -3,12 +3,6 @@ const nodemailer = require("nodemailer");
 const cors = require("cors")({ origin: true });
 require("dotenv").config();
 console.log("Email address", process.env.MAIL_ADDRESS);
-/**  * using gmail with nodemailer  */
-
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", { structuredData: true });
-//   response.send("Hello from Firebase!");
-// });
 
 let transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
