@@ -18,10 +18,15 @@ new Vue({
   VueAxios,
   axios,
   created() {
+    AOS.init();
+    // AOS.init({ disable: "phone" });
     if (this.$store.getters["settings/useFirebase"] == true) {
       firebase.initializeApp(this.$store.getters["settings/firebase"]);
     }
-    AOS.init({ disable: "phone" });
+    if (this.$store.getters["settings/color"] == undefined) {
+      console.log("UNDEFINDDED");
+      this.$store.dispatch("settings/loadColorFromVuetify");
+    }
   },
   render: (h) => h(App),
 }).$mount("#app");

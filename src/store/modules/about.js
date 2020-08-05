@@ -3,40 +3,40 @@ import * as firebase from "firebase";
 const namespaced = true;
 
 const state = {
-  posts: [],
+  about: [],
 };
 
 const getters = {
-  posts(state) {
-    return state.posts;
+  about(state) {
+    return state.about;
   },
 };
 
 const mutations = {
-  addPost(state, payload) {
-    state.posts.push(payload);
+  setAbout(state, payload) {
+    state.about = payload;
   },
-  removePost(state) {
-    state.posts = [];
+  removeAboutt(state) {
+    state.about = [];
   },
+};
+
+const actions = {
   loadAbout({ commit }) {
     this.dispatch("loading/setLoading", true);
     var dbRef = firebase.database().ref("/about");
 
     dbRef.on("value", (snapshot) => {
       if (snapshot.val() == null) {
-        this.dispatch("error/setError", "No 'about' data found.");
         return;
       }
-      commit("setAbout", snapshot.val());
+      let arr = Object.keys(snapshot.val()).map((key) => {
+        return snapshot.val()[key];
+      });
+      console.log("About array", arr);
+      commit("setAbout", arr);
     });
     this.dispatch("loading/setLoading", false);
-  },
-};
-
-const actions = {
-  addPost({ commit }, payload) {
-    commit("addPost", payload);
   },
 };
 

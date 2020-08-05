@@ -2,6 +2,10 @@
   <v-card width="100vw" id="github">
     <v-container>
       <v-row justify="center" align="center">
+        <v-card-title class="text-center" data-aos="zoom-in">Latest GitHub commitments</v-card-title>
+        <div class="mt-5 chart" ref="chartdiv"></div>
+      </v-row>
+      <v-row justify="center" align="center">
         <v-col cols="auto" xs="12">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -9,25 +13,30 @@
                 :icon="true"
                 id="githubIconBtn"
                 x-large
-                dark
                 v-bind="attrs"
                 v-on="on"
                 v-on:click="openGithubUserUrl()"
+                :dark="darkMode"
+                data-aos="zoom-in"
               >
-                <v-icon x-large>mdi-github</v-icon></v-btn
-              >
+                <v-icon x-large>mdi-github</v-icon>
+              </v-btn>
             </template>
-            <span>Open "{{ githubUserUrl }}" in a new tab</span>
+            <span>
+              Open Github user page in a new tab
+              <br />
+              ---->
+              {{ githubUserUrl }}
+            </span>
           </v-tooltip>
         </v-col>
         <v-col cols="auto" xs="12">
-          <v-card-subtitle class="text-center"
-            >Describtion: {{ githubDescription }}</v-card-subtitle
-          >
+          <v-card-subtitle class="text-center">Description: {{ githubDescription }}</v-card-subtitle>
           <v-card-subtitle class="text-center">
-            Made by <span class="text-capitalize">{{ github.user }}</span>
-          </v-card-subtitle></v-col
-        >
+            Made by:
+            <span class="text-capitalize">{{ github.user }}</span>
+          </v-card-subtitle>
+        </v-col>
         <v-col cols="auto" xs="12">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -35,24 +44,22 @@
                 :icon="true"
                 id="githubIconBtn"
                 x-large
-                dark
                 v-bind="attrs"
                 v-on="on"
                 v-on:click="openGithubRepoUrl()"
+                :dark="darkMode"
+                data-aos="zoom-in"
               >
-                <v-icon x-large>mdi-github</v-icon></v-btn
-              >
+                <v-icon x-large>mdi-github</v-icon>
+              </v-btn>
             </template>
-            <span>Open "{{ githubRepoUrl }}" in a new tab</span>
+            <span>
+              Open Github repository in a new tab
+              <br />
+              ----> {{ githubRepoUrl }}
+            </span>
           </v-tooltip>
         </v-col>
-      </v-row>
-
-      <v-row justify="center" align="center">
-        <v-card-title class="text-center"
-          >Latest GitHub commitments
-        </v-card-title>
-        <div class="mt-5 chart" ref="chartdiv"></div>
       </v-row>
     </v-container>
   </v-card>
@@ -86,6 +93,17 @@ export default {
     utils() {
       return this.$store.getters["settings/utils"];
     },
+    color() {
+      return this.$store.getters["settings/color"];
+    },
+    darkMode: {
+      get() {
+        return this.$store.getters["settings/darkMode"];
+      },
+      set(value) {
+        this.$store.dispatch("settings/darkMode", value);
+      },
+    },
     error: {
       get() {
         return this.$store.getters["error/error"];
@@ -97,11 +115,11 @@ export default {
   },
   methods: {
     openGithubUserUrl() {
-      let href = this.githubUserUrl();
+      let href = this.githubUserUrl;
       window.open(href, "_blank");
     },
     openGithubRepoUrl() {
-      let href = this.githubRepoUrl();
+      let href = this.githubRepoUrl;
       window.open(href, "_blank");
     },
   },
@@ -109,18 +127,15 @@ export default {
     axios
       .get(this.github.GET_API_REPO_URL())
       .then((res) => {
-        console.log("utils: ", this.utils);
-        console.log("RES::: ", res);
         this.github.description = res.data.description;
       })
       .catch((err) => {
-        console.error(err);
+        this.error = "Failed to connect to github api:" + err;
       });
 
     axios
       .get(this.github.GET_API_COMMITS_URL())
       .then((res) => {
-        console.log("DATA: ", res);
         return res.data;
       })
       .then((data) => {
@@ -142,8 +157,8 @@ export default {
 
             data.push({
               date: this.commits[i].author.date,
-              name: "author: " + this.commits[i].author.name,
-              comment: "comment: " + this.commits[i].message,
+              name: "Author: " + this.commits[i].author.name,
+              comment: "Comment: " + this.commits[i].message,
               value: commits,
             });
           }
@@ -152,15 +167,19 @@ export default {
 
           let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
           dateAxis.renderer.grid.template.location = 0;
-          dateAxis.renderer.labels.template.fill = am4core.color("#A0CA92");
+          dateAxis.renderer.labels.template.fill = am4core.color(
+            this.color.primary
+          );
 
           let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
           valueAxis.tooltip.disabled = true;
           valueAxis.renderer.minWidth = 35;
-          valueAxis.renderer.labels.template.fill = am4core.color("#A0CA92");
+          valueAxis.renderer.labels.template.fill = am4core.color(
+            this.color.primary
+          );
 
           let series = chart.series.push(new am4charts.LineSeries());
-          series.stroke = am4core.color("#ff3333");
+          series.stroke = am4core.color(this.color.primary);
           series.strokeWidth = 3;
           series.dataFields.dateX = "date";
           series.fill = am4core.color("#333");
@@ -173,7 +192,7 @@ export default {
           series.connect = false;
 
           chart.cursor = new am4charts.XYCursor();
-          chart.background.fill = "#333";
+          chart.background.fill = "#CCCCCCFF";
           chart.background.opacity = 1;
           let scrollbarX = new am4charts.XYChartScrollbar();
           scrollbarX.series.push(series);

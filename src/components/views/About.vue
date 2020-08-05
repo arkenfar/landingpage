@@ -1,10 +1,14 @@
 <template>
   <v-card>
     <v-container>
-      <v-card-title>{{ aboutTitle }}</v-card-title>
-      <v-card-text>
-        {{ about }}
-      </v-card-text>
+      <v-row justify="center">
+        <v-card-title class="text-center">{{ aboutTitle }}</v-card-title>
+      </v-row>
+      <v-row justify="center">
+        <v-col cols="auto" v-for="(item, index) in about" :key="index">
+          <v-card-text>Post: {{ item }}</v-card-text>
+        </v-col>
+      </v-row>
     </v-container>
   </v-card>
 </template>
@@ -13,15 +17,18 @@ export default {
   name: "About",
   computed: {
     about() {
-      return this.$store.getters["settings/about"];
+      return this.$store.getters["about/about"];
+    },
+    appName() {
+      return this.$store.getters["settings/appName"];
     },
     aboutTitle() {
-      return "About Title Placeholder";
+      return "About the project";
     },
   },
   methods: {
     loadAbout() {
-      this.$store.dispatch("settings/loadAbout");
+      this.$store.dispatch("about/loadAbout");
     },
   },
   mounted() {

@@ -7,7 +7,7 @@ const namespaced = true;
 const state = {
   appName: Constants.APPLICATION.GET_APP_NAME(),
   darkMode: Constants.APPLICATION.DARKMODE,
-  color: Constants.APPLICATION.COLOR,
+  color: undefined,
   logo: Constants.APPLICATION.LOGO,
   logoDarkMode: Constants.APPLICATION.LOGO_DARK_MODE,
   copyrights: Constants.COPYRIGHTS.GET_COPYRIGHTS(),
@@ -18,8 +18,10 @@ const state = {
   useFirebase: Constants.APPLICATION.USE_FIREBASE(),
   firebase: Constants.FIREBASE,
   github: Constants.GITHUB,
+  geoLocation: Constants.GEOLOCATION,
   about: undefined,
   utils: Constants.UTILS,
+  sneakpeak: [],
 };
 
 const getters = {
@@ -28,6 +30,9 @@ const getters = {
   },
   utils(state) {
     return state.utils;
+  },
+  sneakpeak(state) {
+    return state.sneakpeak;
   },
   tbaDate(state) {
     return state.tbaDate;
@@ -65,6 +70,9 @@ const getters = {
   github(state) {
     return state.github;
   },
+  geoLocation(state) {
+    return state.geoLocation;
+  },
   about(state) {
     return state.about;
   },
@@ -77,6 +85,9 @@ const mutations = {
   setColor(state, payload) {
     state.color = payload;
   },
+  setPrimaryColor(state, payload) {
+    state.color.primary = payload;
+  },
   setCountdown(state, payload) {
     state.countdown = payload;
   },
@@ -86,6 +97,9 @@ const mutations = {
   setAbout(state, payload) {
     state.about = payload;
   },
+  setSneakpeak(state, payload) {
+    state.sneakpeak = payload;
+  },
 };
 
 const actions = {
@@ -94,13 +108,21 @@ const actions = {
     Vuetify.framework.theme.dark = payload;
     commit("setDarkMode", payload);
   },
-  color({ commit }, payload) {
+  loadColorFromVuetify({ commit }) {
+    if (this.state.settings.darkMode === true) {
+      commit("setColor", Vuetify.framework.theme.themes.dark);
+    } else {
+      commit("setColor", Vuetify.framework.theme.themes.light);
+    }
+  },
+  setPrimarycolor({ commit }, payload) {
     if (this.state.settings.darkMode === true) {
       Vuetify.framework.theme.themes.dark.primary = payload.hex;
+      commit("setPrimaryColor", Vuetify.framework.theme.themes.dark.primary);
     } else {
       Vuetify.framework.theme.themes.light.primary = payload.hex;
+      commit("setPrimaryColor", Vuetify.framework.theme.themes.light.primary);
     }
-    commit("setColor", payload);
   },
   countdown({ commit }, payload) {
     commit("setCountdown", payload);
@@ -111,13 +133,30 @@ const actions = {
   },
   loadAbout({ commit }) {
     this.dispatch("loading/setLoading", true);
-    var boardsRef = firebase.database().ref("/about");
+    var dbRef = firebase.database().ref("/about");
 
-    boardsRef.on("value", (snapshot) => {
+    dbRef.on("value", (snapshot) => {
       if (snapshot.val() == null) {
         return;
       }
+
       commit("setAbout", snapshot.val());
+    });
+    this.dispatch("loading/setLoading", false);
+  },
+  loadSneakpeak({ commit }) {
+    this.dispatch("loading/setLoading", true);
+    var dbRef = firebase.database().ref("/sneakpeak");
+
+    dbRef.on("value", (snapshot) => {
+      if (snapshot.val() == null) {
+        return;
+      }
+      let arr = Object.keys(snapshot.val()).map((key) => {
+        return snapshot.val()[key];
+      });
+      console.log(arr);
+      commit("setSneakpeak", arr);
     });
     this.dispatch("loading/setLoading", false);
   },

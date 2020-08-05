@@ -102,7 +102,7 @@ export default {
     },
     setColor(color) {
       console.log("set color", color);
-      this.$store.dispatch("settings/color", color);
+      this.$store.dispatch("settings/setPrimarycolor", color);
     },
     setDarkMode() {
       this.$store.dispatch("settings/darkMode");
@@ -121,6 +121,10 @@ export default {
   mounted() {
     let x = this.darkMode;
     this.darkMode = x;
+    if (this.$store.getters["settings/color"] == undefined) {
+      console.log("UNDEFINDDED");
+      this.$store.dispatch("settings/loadColorFromVuetify");
+    }
   },
 };
 </script>

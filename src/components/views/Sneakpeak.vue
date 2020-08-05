@@ -1,33 +1,30 @@
 <template>
   <div data-aos="zoom-in">
-    <v-carousel hide-delimiters>
+    <v-carousel hide-delimiters v-if="!loading">
       <v-carousel-item
-        v-for="(item, i) in items"
+        v-for="(item, i) in sneakpeak"
         :key="i"
-        :src="item.src"
+        :src="item"
       ></v-carousel-item>
     </v-carousel>
   </div>
 </template>
 <script>
 export default {
-  data() {
-    return {
-      items: [
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
-        },
-      ],
-    };
+  name: "Sneakpeak",
+
+  computed: {
+    sneakpeak() {
+      return this.$store.getters["settings/sneakpeak"];
+    },
+    loading() {
+      return this.$store.getters["loading/loading"];
+    },
+  },
+  methods: {},
+  mounted() {
+    this.$store.dispatch("settings/loadSneakpeak");
+    console.log(this.sneakpeak);
   },
 };
 </script>

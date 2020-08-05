@@ -4,7 +4,6 @@ import Logo_default from "../assets/Logo_Default.png";
 export default {
   APPLICATION: {
     NAME: process.env.VUE_APP_name || "empty",
-    COLOR: process.env.VUE_APP_color || "",
     LOGO: Logo_default,
     LOGO_DARK_MODE: Logo_darkMode,
     TBA_DATE: process.env.VUE_APP_tbaDate || "2020-07-15",
@@ -57,6 +56,14 @@ export default {
     },
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+  },
+  GEOLOCATION: {
+    apiKey: process.env.VUE_APP_GEO_LOCATION_DB_API_KEY || undefined,
+    apiUrl: process.env.VUE_APP_GEO_LOCATION_DB_API_URL || undefined,
+
+    getApiUrl() {
+      return this.apiUrl + this.apiKey;
     },
   },
   FIREBASE: {
