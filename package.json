@@ -11,7 +11,7 @@
     "@amcharts/amcharts4": "^4.9.30",
     "@amcharts/amcharts4-geodata": "^4.1.16",
     "aos": "^2.3.4",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "firebase": "^7.16.0",
     "firebase-admin": "^9.0.0",
